@@ -1,0 +1,41 @@
+# Frequently Asked Questions
+
+``` javascript copy
+const addLiquidityAndStake = async () => {
+    const usdcInputAmount = new BN(1_000_000); // $1
+    
+    // this can be any other token available in the pool, for instance SOL, BTC and ETH
+    const usdcCustody = POOL_CONFIG.custodies.find(c => c.symbol === 'USDC')!;
+    const slippageBps: number = 800 // 0.8%
+    let instructions: TransactionInstruction[] = []
+    let additionalSigners: Signer[] = []
+
+    await flashClient.loadAddressLookupTable(POOL_CONFIG)
+
+    // flash-sdk version >= 2.31.6
+    const { amount: minLpAmountOut, fee } = await flashClient.getAddLiquidityAmountAndFeeView(usdcInputAmount, POOL_CONFIG.poolAddress, usdcCustody.custodyAccount, POOL_CONFIG);
+
+    const minLpAmountOutAfterSlippage = minLpAmountOut
+        .mul(new BN(10 ** BPS_DECIMALS - slippageBps))
+        .div(new BN(10 ** BPS_DECIMALS))
+
+    const setCULimitIx = ComputeBudgetProgram.setComputeUnitLimit({ units: 400_000 }) // addLiquidity
+
+    const addLiquidityAndStakeData = await flashClient.addLiquidityAndStake('USDC', usdcInputAmount, minLpAmountOutAfterSlippage, POOL_CONFIG);
+    instructions.push(...addLiquidityAndStakeData.instructions)
+    additionalSigners.push(...addLiquidityAndStakeData.additionalSigners)
+
+    const flpStakeAccountPK = PublicKey.findProgramAddressSync(
+        [Buffer.from('stake'), flashClient.provider.publicKey.toBuffer(), POOL_CONFIG.poolAddress.toBuffer()],
+        POOL_CONFIG.programId
+    )[0]
+
+    const refreshStakeInstruction = await flashClient.refreshStake('USDC', POOL_CONFIG, [flpStakeAccountPK])
+
+    instructions.push(refreshStakeInstruction)
+
+    const trxId = await flashClient.sendTransaction([setCULimitIx, ...instructions])
+
+    console.log('addLiquidityAndStake trx :>> ', trxId);
+}
+```
