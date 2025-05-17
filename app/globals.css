@@ -28,8 +28,14 @@ body {
 
 /* styles/globals.css */
 .nextra-breadcrumb :is(a, span) {
-  color:#b1a3fb !important; /* purple-500 */
+  color:#b1a3fb !important; 
 }
 
+.active :is(a){
+  color:#b1a3fb !important; 
+  background-color: rgba(177, 163, 251, 0.30);
+}
 
-
+.nextra-scrollbar a[class*="text-primary-600"]{
+  color: #b1a3fb !important;
+}
