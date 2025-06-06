@@ -31,7 +31,7 @@ by the JLP pool, burning the JLP token, and releasing some of the currency conta
 
 Purchasing/Exiting JLP
 
-The best way to purchase or exit JLP is via [Jupiter Swap.](https://web.archive.org/web/20250310172707/https:/jup.ag/swap/USDC-JLP)
+The best way to purchase or exit JLP is via [Jupiter Swap](https://web.archive.org/web/20250310172707/https://jup.ag/swap/USDC-JLP)
 When using Jupiter Swap or programs that integrate Jupiter Swap, the minting and burning of JLP tokens occur automatically. 
 When you swap in and out of JLP, Jupiter Swap will find the best route to mint/burn JLP automatically, or swap through other DEXes if the route offered is better.
 
@@ -77,7 +77,7 @@ Fee distribution into the JLP token occurs at the start of every hour, in UTC (e
 
 During this process, 75% of realised fees are withdrawn from each custody account's assets, fees_reserves and deposited back into the pool, while the remaining 25% is sent to Jupiter as a protocol fee.
 
-1. Weekly APR Updates
+###  Weekly APR Updates
 
 The JLP pool maintains a pool_apr.last_updated field, which records a UNIX timestamp of the latest APR update. After a **consecutive week** of hourly fee distributions has passed, Jupiter calculates the new APR and updates the
 
@@ -87,9 +87,12 @@ pool_apr.fee_apr_bps value accordingly.
 
 APR for the JLP pool is updated weekly and can be calculated using the following formula:
 
-if current_time > (last_updated_time + 1_WEEK):     time_diff = current_time - last_updated_time
-// 10_000 represents the scaling factor used to calculate the BPS for the pool's APR,     apr_bps = (realized_fee_usd * YEAR_IN_SECONDS * 10_000) /
-(pool_amount_usd * time_diff)
+```python
+if current_time > (last_updated_time + 1_WEEK):
+    time_diff = current_time - last_updated_time
+    # 10_000 is the scaling factor used to calculate the BPS for the pool's APR
+    apr_bps = (realized_fee_usd * YEAR_IN_SECONDS * 10_000) / (pool_amount_usd * time_diff)
+```
 
 ## Risks
 
@@ -103,11 +106,11 @@ Traders' PnL from perpetual trading impacts the JLP pool. If a trader incurs a n
 
 **Long Trade Scenario:** If the trader profits on the long, the JLP pool will lose in token quantity but not in USD value because the underlying token value in the pool appreciates in value as well.
 Token Price Fluctuations: The JLP pool consists of both stable and non-stable tokens. 
+
 ## Pool weightage
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+_This section is under construction. Content coming soon._
+
 
 ## Maintaining target weight
 
