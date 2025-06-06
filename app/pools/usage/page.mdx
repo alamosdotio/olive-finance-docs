@@ -1,39 +1,7 @@
 # How Pool Works
 
 ## Liquidity Pool
-
-The Jupiter Perpetuals exchange is a trader-to-LP exchange, which means traders borrow tokens from the liquidity pool (the JLP pool) for leverage.
-Instead of periodic funding payments between long and short traders, Jupiter Perpetuals implements an hourly borrow fee mechanism. Traders pay these
-fees to the pool based on the amount of tokens they've borrowed. This mechanism helps secure the balance of the pool's assets and compensates liquidity
-providers for the use of their tokens.
-
 ## Add/Remove Liquidity
-
-When a user adds liquidity to the JLP pool, they increase the amount of TVL
-(Total Value Locked) which increases the liquidity available for perps trading. 
-The pool is currently a collection of the following tokens: **USDC, USDT, SOL, wBTC and ETH**.
-
-Adding Liquidity
-
-Any Liquidity providers (LPs) can acquire JLP by swapping for it on Jupiter
-Swap. Jupiter Swap will find the best price to acquire JLP for you automatically. 
-This can either be purchasing it off the open market or swapping it for a desired 
-asset and depositing that into JLP directly. Use Jupiter Swap for a frictionless 
-experience of getting JLP. While JLP is still being minted, your assets may be deposited
-into the relevant token pool, increasing the current weightage. At the point of depositing
-assets into the JLP pool, the protocol will re-price the TVL in USD value.
-
-Removing Liquidity
-
-JLP can also be sold via Jupiter Swap. Simply swap JLP for your desired asset. 
-The JLP token could either be transferred to another trader or may be redeemed
-by the JLP pool, burning the JLP token, and releasing some of the currency contained in the pool.
-
-Purchasing/Exiting JLP
-
-The best way to purchase or exit JLP is via [Jupiter Swap](https://web.archive.org/web/20250310172707/https://jup.ag/swap/USDC-JLP)
-When using Jupiter Swap or programs that integrate Jupiter Swap, the minting and burning of JLP tokens occur automatically. 
-When you swap in and out of JLP, Jupiter Swap will find the best route to mint/burn JLP automatically, or swap through other DEXes if the route offered is better.
 
 ## Yield generation
 The exchange generates fees and yields in various ways:
@@ -87,12 +55,6 @@ pool_apr.fee_apr_bps value accordingly.
 
 APR for the JLP pool is updated weekly and can be calculated using the following formula:
 
-```python
-if current_time > (last_updated_time + 1_WEEK):
-    time_diff = current_time - last_updated_time
-    # 10_000 is the scaling factor used to calculate the BPS for the pool's APR
-    apr_bps = (realized_fee_usd * YEAR_IN_SECONDS * 10_000) / (pool_amount_usd * time_diff)
-```
 
 ## Risks
 
@@ -102,14 +64,11 @@ During a bull market, JLP may not outperform SOL, ETH, or BTC. This is because t
 
 ### 2. Profit and Loss (PnL) Dynamics
 
-Traders' PnL from perpetual trading impacts the JLP pool. If a trader incurs a net positive PnL, the losses are sourced from the JLP pool to compensate the trader. Conversely, if a trader's PnL is a net negative, the gains are deposited into the JLP pool for LP holders.
 
-**Long Trade Scenario:** If the trader profits on the long, the JLP pool will lose in token quantity but not in USD value because the underlying token value in the pool appreciates in value as well.
-Token Price Fluctuations: The JLP pool consists of both stable and non-stable tokens. 
 
 ## Pool weightage
 
-_This section is under construction. Content coming soon._
+
 
 
 ## Maintaining target weight
