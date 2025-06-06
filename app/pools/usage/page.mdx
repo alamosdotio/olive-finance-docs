@@ -5,7 +5,7 @@ The Jupiter Perpetuals exchange is a trader-to-LP exchange, which means traders 
 Instead of periodic funding payments between long and short traders, Jupiter Perpetuals implements an hourly borrow fee mechanism.
 Traders pay these fees to the pool based on the amount of tokens they've borrowed. This mechanism helps secure the balance of the pool's assets and compensates liquidity providers for the use of their tokens.
 
-# Add/Remove Liquidity
+## Add/Remove Liquidity
 
 When a user adds liquidity to the JLP pool, they increase the amount of TVL
 
@@ -27,7 +27,7 @@ The best way to purchase or exit JLP is via [Jupiter Swap.](https://web.archive.
 
 When using Jupiter Swap or programs that integrate Jupiter Swap, the minting and burning of JLP tokens occur automatically. When you swap in and out of JLP, Jupiter Swap will find the best route to mint/burn JLP automatically, or swap through other DEXes if the route offered is better.
 
-## Yieled Integration
+## Yield Integration
 ## Estimated Yield
 To provide an estimated perspective, you can calculate potential revenue by taking the Jupiter Perpetual Exchange's daily or weekly total volume and multiplying it by a fee percentage. For instance:
 Total Daily Volume: 50 million Fee Percentage: 0.06%
@@ -60,5 +60,89 @@ Finally, you can calculate your estimated generated revenue share by multiplying
 ```jsx
 estimated revenue share you generate = $22,500 x 0.025% = $5.625
 ```
+## Fee distribution and APY calculation
+### Fee Distribution
 
+**1) Hourly Fee Distribution**
 
+Fee distribution into the JLP token occurs at the start of every hour, in UTC time (e.g. 00:00 UTC, 01:00 UTC, 02:00 UTC and so on).
+
+During this process, 75% of realized fees are withdrawn from each custody account's assets.fees_reserves and deposited back into the pool, while the remaining 25% is sent to Jupiter as a protocol fee.
+
+1. Weekly APR Updates
+
+The JLP pool maintains a pool_apr.last_updated field, which records a UNIX timestamp of the latest APR update. After a **consecutive week** of hourly fee distributions have passed, Jupiter calculates the new APR and updates the
+
+pool_apr.fee_apr_bps value accordingly.
+
+**APR Calculation**
+
+APR for the JLP pool is updated weekly, and can be calculated using the following formula:
+
+```jsx
+if current_time > (last_updated_time + 1_WEEK):     time_diff = current_time - last_updated_time
+// 10_000 represents the scaling factor used to calculate the BPS for the pool's APR     apr_bps = (realized_fee_usd * YEAR_IN_SECONDS * 10_000) /
+(pool_amount_usd * time_diff)
+```
+# Risks
+### 1. Bull Markets
+
+During a bull market, JLP may not outperform SOL, ETH, or BTC. This is because the pool is made of a mix of stable and non-stable tokens.
+
+### 2. Profit and Loss (PnL) Dynamics
+
+Traders' PnL from perpetual trading impacts the JLP pool. If a trader incurs a net positive PnL, the losses are sourced from the JLP pool to compensate the trader. Conversely, if a trader's PnL is a net negative, the gains are deposited into the JLP pool for LP holders.
+
+**Long Trade Scenario:** If the trader profits on the long, the JLP pool will lose in token quantity but not in USD value because the underlying token value in the pool appreciates in value as well.
+
+![Add a heading (2).jpg](attachment:f8a2ebb5-a1aa-43b4-857b-40bd53d9e0b3:Add_a_heading_(2).jpg)
+
+1. **Token Price Fluctuations:** The JLP pool consists of both stable and non-stable tokens. 
+
+![Add a heading (3).jpg](attachment:12618edd-9292-470a-b3ee-cb4c44213e61:Add_a_heading_(3).jpg)
+
+Fluctuations in token prices can affect the value of JLP. As a result, users may find that their withdrawn tokens can be worth less compared to their initial deposit. Additionally, deposit and withdrawal fees for the JLP Pool may further reduce the number of tokens withdrawn, particularly for shorter holding periods.
+
+**Can JLP go down?** Yes. As shown in the trader profiting on a short trade, JLP in USD value will go down when the fees generated are lower than depreciation of assets and payout from traders' profit.
+
+## Pool weightage
+
+In the JLP pool, each asset is assigned a **target weight**, which is set by the team.
+
+Jupiter is working with [Gauntlet](https://web.archive.org/web/20250310172707/https:/www.gauntlet.xyz/) and [Chaos Labs](https://web.archive.org/web/20250310172707/https:/chaoslabs.xyz/) to conduct regular risk assessments and market analyses in response to the evolving market conditions. These assessments are also discussed with the community before they are presented to the team for rollout.
+
+## Maintaining target weight
+
+The weightages of each asset in the JLP pool will differ based on market activity, particularly Spot Trading or Deposit & Withdrawal of assets into JLP.
+
+To help maintain the Target Weight, JLP dynamically sets a Swap Fee or Mint/Redeem Fee.
+
+### Example: $USDC
+
+- If the current weightage of USDC is **higher** than its advised target weightage, USDC deposits into the JLP Pool will incur additional fees, while USDC withdrawals will receive a fee discount.
+
+- If the current weightage of USDC is **lower** than its advised target weightage, USDC deposits into the JLP Pool will receive a fee discount, while USDC withdrawals will incur additional fees.
+
+Simply put: Transactions that shift an assetʼs current weightage **further away** from the target weightage incur additional fees while transactions that shift it **closer to** the target weightage will receive a discount on fees. This is based on the fee incurred when minting or burning JLP during the swap.
+
+This allows JLP to maintain its target weight as liquidity providers are incentivized to maintain the target weightage amid high volumes of spot trading or deposit/withdrawal activity.
+
+## Failsafe mechanism
+
+**How far can the current weightage of an asset deviate from its target weightage?**
+
+An assetʼs current weightage can deviate from its target weightage by a maximum of **20%** of the target weightage value.
+
+**Example:**
+
+If the advised target weightage of **USDC** in the JLP pool is **26%,** the current weightage of the asset in the JLP pool can deviate between a range of
+
+**20.8%** (-20%) and **31.2%** (+20%).
+
+This means that USDC cannot be deposited into the pool if the current weightage goes above **31.2%**, and USDC cannot be withdrawn from the pool if the current weightage goes below **20.8%**.
+
+This means that during a Black Swan event where a JLP asset depegs, the maximum loss is 
+
+```jsx
+Target Weight * 1.2.
+```
