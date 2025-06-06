@@ -1,5 +1,5 @@
 #  How Pool Works
-# Liquidity Pool
+## Liquidity Pool
 
 The Jupiter Perpetuals exchange is a trader-to-LP exchange, which means traders borrow tokens from the liquidity pool (the JLP pool) for leverage.
 Instead of periodic funding payments between long and short traders, Jupiter Perpetuals implements an hourly borrow fee mechanism.
@@ -26,3 +26,39 @@ JLP can also be sold via Jupiter Swap. Simply swap JLP for your desired asset. T
 The best way to purchase or exit JLP is via [Jupiter Swap.](https://web.archive.org/web/20250310172707/https:/jup.ag/swap/USDC-JLP)
 
 When using Jupiter Swap or programs that integrate Jupiter Swap, the minting and burning of JLP tokens occur automatically. When you swap in and out of JLP, Jupiter Swap will find the best route to mint/burn JLP automatically, or swap through other DEXes if the route offered is better.
+
+## Yieled Integration
+## Estimated Yield
+To provide an estimated perspective, you can calculate potential revenue by taking the Jupiter Perpetual Exchange's daily or weekly total volume and multiplying it by a fee percentage. For instance:
+Total Daily Volume: 50 million Fee Percentage: 0.06%
+Price Impact Fees: Minimum 0.01% Revenue Share Percentage: 75%
+Using these values (excluding price impact and hourly borrow fees), the estimated calculation would be as follows:
+Total estimated revenue to be deposited into JLP pool:
+
+```jsx
+$50M x 0.06% x 75% = $22,500
+
+```
+
+To determine your specific share or weight in the total JLP pool, use the following formula:
+
+```jsx
+your_pool_contributed_amount / total_pool_amount x 100 =
+```
+
+```jsx
+your_pool_contributed_amount / total_pool_amount x 100 =
+```
+
+For example:
+Your contribution: $1,000
+Total pool amount: $4,000,000
+Your share percentage: 1,000 / 4,000,000 x 100 = 0.025%
+
+Finally, you can calculate your estimated generated revenue share by multiplying the results of the first and second calculations:
+
+```jsx
+estimated revenue share you generate = $22,500 x 0.025% = $5.625
+```
+
+
